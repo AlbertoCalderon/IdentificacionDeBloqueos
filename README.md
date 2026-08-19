@@ -285,3 +285,24 @@ Se recomienda investigar cuando:
 > **Importante:** No ejecutar `KILL` sobre una sesión únicamente porque aparece como bloqueadora. Primero se debe identificar la operación que está realizando y evaluar las consecuencias de cancelar la transacción.
 
 ---
+
+# IMPORTANTE
+
+Antes de ejecutar cualquiera de las consultas o acciones descritas en esta guía, es indispensable **verificar que se está trabajando en el servidor y ambiente correctos**.
+
+Especialmente antes de realizar acciones como `KILL`, se debe confirmar cuidadosamente:
+
+- El servidor al que se encuentra conectado.
+- El ambiente en el que se está trabajando (Pruebas o Producción).
+- El `SPID` que se pretende finalizar.
+- El usuario, equipo y aplicación asociados a la sesión.
+- La consulta o proceso que se encuentra ejecutando.
+- El posible impacto de finalizar dicha sesión.
+
+>  **ADVERTENCIA:** La ejecución de comandos administrativos como `KILL` puede interrumpir procesos en ejecución, provocar la reversión (`ROLLBACK`) de transacciones y afectar temporalmente la operación de otros usuarios o aplicaciones.
+
+**Antes de realizar cualquier acción que pueda afectar la operación del servidor, se deberá validar el diagnóstico y confirmar el procedimiento con el responsable o superior correspondiente.**
+
+La información obtenida mediante estas consultas debe utilizarse primero para **identificar y analizar el problema**. No se debe ejecutar una acción correctiva hasta tener certeza sobre el proceso afectado y las posibles consecuencias.
+
+> **Primero diagnosticar, después validar y finalmente actuar.**
