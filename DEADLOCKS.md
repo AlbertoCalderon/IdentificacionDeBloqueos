@@ -432,7 +432,7 @@ Antes de ejecutar cualquier consulta o realizar acciones sobre el servidor, se d
 Confirma siempre:
 
 - Servidor.
-- Ambiente (Desarrollo, Pruebas o Producción).
+- Ambiente (Pruebas o Producción).
 - Base de datos.
 - Fecha y horario del incidente.
 - Usuarios y procesos involucrados.
