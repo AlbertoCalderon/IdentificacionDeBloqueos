@@ -10,7 +10,8 @@ Guía de consultas SQL Server para monitorear usuarios conectados, identificar s
 2. [Identificación de bloqueos](#2-identificación-de-bloqueos)
 3. [Interpretación de resultados](#3-interpretación-de-resultados)
 4. [Tipos de espera](#4-tipos-de-espera)
-5. [Recomendaciones](#5-recomendaciones)
+5. [Finalizar una sesión con KILL](#5-finalizar-una-sesión-con-kill)
+6. [Recomendaciones](#6-recomendaciones)
 
 ---
 
@@ -194,7 +195,79 @@ la espera está relacionada con un **bloqueo (LOCK)**.
 
 ---
 
-# 5. Recomendaciones
+# 5. Finalizar una sesión con KILL
+
+Una vez identificado el `SPID_Bloqueador`, SQL Server permite finalizar esa sesión utilizando el comando `KILL`.
+
+```sql
+KILL <SPID>;
+```
+
+Por ejemplo, si la consulta de bloqueos muestra que el proceso bloqueador es el SPID `177`:
+
+```sql
+KILL 177;
+```
+
+## ¿Qué hace KILL?
+
+`KILL` finaliza la sesión indicada.
+
+Si la sesión tenía una transacción abierta, SQL Server debe realizar un **ROLLBACK** para deshacer los cambios que todavía no habían sido confirmados.
+
+Por este motivo, ejecutar `KILL` **no significa necesariamente que el bloqueo desaparecerá inmediatamente**.
+
+Dependiendo de la cantidad de información modificada por la transacción, el proceso de `ROLLBACK` puede tardar desde unos segundos hasta varios minutos.
+
+---
+
+##  Antes de ejecutar KILL
+
+Antes de finalizar una sesión se debe revisar la información obtenida en la consulta de bloqueos, principalmente:
+
+- `SPID_Bloqueador`
+- `Login_Bloqueador`
+- `Host_Bloqueador`
+- `Programa_Bloqueador`
+- `Query_Bloqueador`
+- Tiempo que lleva activo el proceso
+- Cantidad de sesiones que está bloqueando
+
+No se recomienda ejecutar `KILL` únicamente porque una sesión aparece como bloqueadora.
+
+Un bloqueo puede ser temporal y formar parte del funcionamiento normal de SQL Server.
+
+---
+
+## Ejecutar KILL
+
+Una vez confirmado que la sesión debe ser finalizada:
+
+```sql
+KILL 177;
+```
+
+Donde `177` corresponde al `SPID_Bloqueador` identificado previamente.
+
+>  **Importante:** Verificar cuidadosamente el SPID antes de ejecutar el comando.
+
+---
+
+## ¿Cuándo considerar un KILL?
+
+Puede considerarse finalizar una sesión cuando:
+
+- Mantiene un bloqueo durante un periodo anormalmente largo.
+- Está bloqueando a múltiples usuarios.
+- La aplicación que originó la sesión ya no responde.
+- Se identificó una transacción abierta que no está avanzando.
+- Se confirmó que cancelar la operación no afectará un proceso crítico.
+
+>  **Advertencia:** `KILL` debe utilizarse como una acción correctiva y no como la solución habitual a los bloqueos. Si el mismo problema ocurre constantemente, se debe investigar la causa del bloqueo.
+
+---
+
+# 6. Recomendaciones
 
 La existencia de un bloqueo **no significa automáticamente que exista un problema**.
 
